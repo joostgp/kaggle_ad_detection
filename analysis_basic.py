@@ -7,6 +7,9 @@ import random
 from support import report, start,jsontodict, newfigure
 from sklearn.cross_validation import train_test_split
 
+# Requires directory ./report for saving images
+
+
 #--------------------------
 #   LOADING DATA
 #--------------------------
@@ -14,7 +17,7 @@ from sklearn.cross_validation import train_test_split
 def load_data():
     t = start("loading data")
     
-    datafile = 'ItemPairs_train_merged_200000.csv'
+    datafile = 'ItemPairs_train_merged_20000.csv'
     data = pd.read_csv(datafile)
     
     report(t, nitems=data.shape[0])
