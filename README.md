@@ -4,7 +4,8 @@ Detect duplicate ads for Avito (Kaggle competition, 53/548). Basic Python script
 ## Installation
 - Download files
 - Unzip data
-- Create report directory
+- Make sure report directory exists
 
 ## Usage
-- Just run :)
+- cd to base directory of files
+- python analysis_basic.py
