@@ -236,10 +236,9 @@ def get_randomforest_classifier(X_train, y_train, params=None):
     return clf
     
 from xgboost.sklearn import XGBClassifier 
-#import xgboost as xgb 
-def get_xgboost_classifier(X_train, y_train, X_val, y_val,params=None):
+def get_xgboost_classifier(X_train, y_train, X_val, y_val,params=None, tag=""):
     
-    param_grid = {'max_depth':[3,5,7], 'min_child_weight': [1,3,5], 'n_estimators': 50}
+    param_grid = {'max_depth':[3,5,7], 'min_child_weight': [1,3,5], 'n_estimators': [50]}
     
     if params is None:
         xgb = XGBClassifier(
@@ -263,15 +262,15 @@ def get_xgboost_classifier(X_train, y_train, X_val, y_val,params=None):
         clf = XGBClassifier(**params)
         clf.fit(X_train, y_train, eval_set =  [(X_train,y_train),(X_val,y_val)], eval_metric='auc', verbose=False)
         
-    if plot_cv_curves:
-        train = clf.evals_result()['validation_0']['auc']
-        val = clf.evals_result()['validation_1']['auc']
+        if plot_cv_curves:
+            train = clf.evals_result()['validation_0']['auc']
+            val = clf.evals_result()['validation_1']['auc']
         
-        plot_cv_curve(train, val, params['learning_rate'])
+            plot_cv_curve(train, val, tag)
         
-    if plot_feature_importance:
-        plot_feature_importance(clf,params['learning_rate'])
-            
+        if plot_feature_importance:
+            plot_feature_importance(clf, tag)
+
     return clf
         
 
@@ -279,7 +278,6 @@ def get_xgboost_classifier(X_train, y_train, X_val, y_val,params=None):
 
 def report_result(clf, X_test, y_test):
     y_pred = clf.predict_proba(X_test)[:,1]
-    print ""
     print "{} AUC Score: {:.4f}".format(type(clf),metrics.roc_auc_score(y_test,y_pred))
    
 
@@ -291,26 +289,28 @@ def report_result(clf, X_test, y_test):
 
     return metrics.roc_auc_score(y_test,y_pred)
     
-def plot_cv_curve(test_scores, train_scores, identifier):
-    newfigure("Progress AUC score during boosting " + str(identifier))
+def plot_cv_curve(test_scores, train_scores, tag):
+    plt.figure()
+    plt.title("Progress AUC score during boosting - " + str(tag))
     plt.plot(test_scores,'g',label='Validation set')
     plt.plot(train_scores,'r',label='Train set')
     plt.grid()
     plt.xlabel('Boosting round')
     plt.ylabel('AUC Score')
     plt.legend(loc=4)  
-    plt.savefig('report/xgb_eval_curves_' + str(identifier) + '.png')
+    plt.savefig('report/xgb_eval_curves_' + str(tag) + '.png')
     
-def plot_feature_importance(clf, identifier):
+def plot_feature_importance(clf, tag):
     
     feat_imp = pd.Series(clf.booster().get_fscore()).sort_values(ascending=False)
 
-    newfigure('Feature Importances'+str(identifier))
+    plt.figure()
+    plt.title('Feature Importances'+str(tag))
     feat_imp.plot(kind='bar')
     plt.ylabel('Feature Importance Score')
     plt.grid()
     plt.tight_layout()
-    plt.savefig('report/xgb_feature_importance_' + str(identifier) + '.png')
+    plt.savefig('report/xgb_feature_importance_' + str(tag) + '.png')
     
 #--------------------------
 # SUPPORT FUNCTIONS
@@ -327,7 +327,7 @@ def run_case(case):
     print("Running case: %s" % name)
     
     if classifier=="xgb":
-        return get_xgboost_classifier(X_train, y_train, X_val, y_val, clfparams)
+        return get_xgboost_classifier(X_train, y_train, X_val, y_val, clfparams, tag = name)
     elif classifier=="knn":
         return get_knn_classifier(X_train, y_train, clfparams)
     elif classifier=="log":
@@ -339,8 +339,10 @@ def run_case(case):
         
 def run_cases(cases, groupName):
     
-    print("Running %s" % groupName)    
     print("")
+    print("--------------------------------------------------------")
+    print("Running %s" % groupName)
+    print("--------------------------------------------------------")
     
     names = [x[0] for x in cases]
     
@@ -522,10 +524,10 @@ if __name__ == "__main__":
     
     
     compare_basic_classifiers()
-    # compare_tree_ensembles
-    # compare_tree_ensembles_gridsearch
-    # compare_xgboost_hyperparams_maxdepth
-    # compare_xgboost_hyperparams_minchildweight
-    # compare_xgboost_hyperparams_etanestimator()
+    compare_tree_ensembles()
+    compare_tree_ensembles_gridsearch()
+    compare_xgboost_hyperparams_maxdepth()
+    compare_xgboost_hyperparams_minchildweight()
+    compare_xgboost_hyperparams_etanestimator()
 
     
