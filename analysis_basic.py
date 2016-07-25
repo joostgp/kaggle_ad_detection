@@ -422,6 +422,9 @@ def run_cases(cases, groupName):
         plt.tight_layout()
         plt.grid() 
         plt.savefig('report/%s_pred_time.png' % groupName)
+        
+    
+    print('%s done. Results saved in %s.' % (groupName, 'report'))
     
     return (scores, clfs, times_t, times_p)
 #--------------------------
