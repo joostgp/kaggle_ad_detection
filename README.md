@@ -4,12 +4,12 @@ Detect duplicate ads for Avito (Kaggle competition, 53/548). Basic Python script
 ## Installation
 - Download files
 - Unzip files
-- Make sure 'report' directory exists
+- Make sure 'report' directory exists in base directory
 
 ## Usage
 - cd to base directory of files
-- comment/uncomment lines 525-530 to run specific evaluations
-- python analysis_basic.py
+- run analysis_basic.py, e.g. 'python analysis_basic.py'
+- comment/uncomment lines 525-530 in analysic_basic.py to run specific evaluations
 
 ## Dependencies
 The code is confirmed to work with the following versions of packages.
@@ -19,4 +19,5 @@ The code is confirmed to work with the following versions of packages.
 - Matplotlib 1.5.1
 - XGBoost 0.4a30 (*)
 
-*) Pip installation may not work on Windows environments, see here for more information https://pypi.python.org/pypi/xgboost/.
+*) Pip installation may not work on Windows environments, see following link for more information https://pypi.python.org/pypi/xgboost/.
+
